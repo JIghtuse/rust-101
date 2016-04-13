@@ -4,24 +4,16 @@
 // As our first piece of Rust code, we want to write a function that computes the
 // minimum of a list.
 
-
-// An `enum` for "a number or nothing" could look as follows:
-enum NumberOrNothing {
-    Number(i32),
-    Nothing
-}
-
-fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
-    use self::NumberOrNothing::{Number,Nothing};
-    let mut min = Nothing;
+fn vec_min(vec: Vec<i32>) -> Option<i32> {
+    let mut min = None;
 
     for item in vec {
         match min {
-            Nothing => {
-                min = Number(item)
+            None => {
+                min = Some(item)
             },
-            Number(n) => {
-                min = Number(min_i32(item, n))
+            Some(n) => {
+                min = Some(min_i32(item, n))
             }
         }
     }
@@ -41,10 +33,10 @@ fn read_vec() -> Vec<i32> {
     vec![5, 2, 1, 0, 3, 4]
 }
 
-fn print_number_or_nothing(n: NumberOrNothing) {
+fn print_number_or_nothing(n: Option<i32>) {
     match n {
-        NumberOrNothing::Nothing => println!("No minimum value"),
-        NumberOrNothing::Number(n) => println!("Minimum of a vec: {}", n),
+        None => println!("No minimum value"),
+        Some(n) => println!("Minimum of a vec: {}", n),
     }
 }
 
