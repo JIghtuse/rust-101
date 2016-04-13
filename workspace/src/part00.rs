@@ -8,12 +8,13 @@ fn vec_min(vec: Vec<i32>) -> Option<i32> {
     let mut min = None;
 
     for item in vec {
+        min = 
         match min {
             None => {
-                min = Some(item)
+                Some(item)
             },
             Some(n) => {
-                min = Some(min_i32(item, n))
+                Some(min_i32(item, n))
             }
         }
     }
