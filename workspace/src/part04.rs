@@ -60,6 +60,11 @@ fn mutable_ref_demo() {
     /* println!("The first element is: {}", *first); */             /* BAD! */
 }
 
+pub fn main(){
+    shared_ref_demo();
+    mutable_ref_demo();
+}
+
 // ## Summary
 // The ownership and borrowing system of Rust enforces the following three rules:
 // 
@@ -69,4 +74,3 @@ fn mutable_ref_demo() {
 // 
 // As it turns out, combined with the abstraction facilities of Rust, this is a very powerful mechanism
 // to tackle many problems beyond basic memory safety. You will see some examples for this soon.
-
