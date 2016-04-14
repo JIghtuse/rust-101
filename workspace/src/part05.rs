@@ -3,6 +3,7 @@
 
 // ## Big Numbers
 
+#[derive(Clone)]
 pub struct BigInt {
     pub data: Vec<u64>, // least significant digit first, no trailing zeros
 }
@@ -11,17 +12,17 @@ pub struct BigInt {
 impl BigInt {
     pub fn new(x: u64) -> Self {
         if x == 0 {
-            unimplemented!()
+            BigInt { data: vec![] }
         } else {
-            unimplemented!()
+            BigInt { data: vec![x] }
         }
     }
 
     pub fn test_invariant(&self) -> bool {
-        if self.data.len() == 0 {
+        if self.data.is_empty() {
             true
         } else {
-            unimplemented!()
+            self.data[self.data.len() - 1] != 0
         }
     }
 
@@ -35,7 +36,15 @@ impl BigInt {
     // 
     // *Hint*: You can use `pop` to remove the last element of a vector.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
-        unimplemented!()
+        let mut bint = BigInt::new(0);
+
+        bint.data = v;
+        bint.data.reverse();
+
+        while bint.data[bint.data.len() - 1] == 0 {
+            bint.data.pop();
+        }
+        bint
     }
 }
 
@@ -43,25 +52,38 @@ impl BigInt {
 fn clone_demo() {
     let v = vec![0,1 << 16];
     let b1 = BigInt::from_vec((&v).clone());
-    let b2 = BigInt::from_vec(v);
-}
-
-impl Clone for BigInt {
-    fn clone(&self) -> Self {
-        unimplemented!()
-    }
+    let b2 = BigInt::from_vec(v.clone());
+    let b3 = BigInt::from_vec(v);
+    assert!(b1.test_invariant());
+    assert!(b2.test_invariant());
+    assert!(b3.test_invariant());
 }
 
 // We can also make the type `SomethingOrNothing<T>` implement `Clone`. 
 use part02::{SomethingOrNothing,Something,Nothing};
 impl<T: Clone> Clone for SomethingOrNothing<T> {
     fn clone(&self) -> Self {
-        unimplemented!()
+        match *self {
+            Nothing => Nothing,
+            Something(ref v) => Something(v.clone()),
+        }
     }
 }
 
-// **Exercise 05.2**: Write some more functions on `BigInt`. What about a function that returns the number of
-// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all take `self` as a shared reference (i.e., in borrowed form).
+impl BigInt {
+    fn number_of_digits(&self) -> usize {
+        self.data.len()
+    }
+    fn number_of_nonzero_digits(&self) -> usize {
+        self.data.iter().filter(|&x| *x != 0).count()
+    }
+    fn smallest_digit(&self) -> Option<u64> {
+        self.data.iter().min().cloned()
+    }
+    fn largest_digit(&self) -> Option<u64> {
+        self.data.iter().max().cloned()
+    }
+}
 
 // ## Mutation + aliasing considered harmful (part 2)
 enum Variant {
@@ -78,3 +100,22 @@ fn work_on_variant(mut var: Variant, text: String) {
     *ptr = 1337;
 }
 
+pub fn main() {
+    clone_demo();
+
+    let empty = BigInt::new(0);
+    assert!(empty.test_invariant());
+    assert!(empty.data == []);
+    assert!(empty.number_of_digits() == 0);
+    assert!(empty.number_of_nonzero_digits() == 0);
+    assert!(empty.smallest_digit().is_none());
+    assert!(empty.largest_digit().is_none());
+
+    let b = BigInt::from_vec(vec![0, 3, 2, 4, 5, 0]);
+    assert!(b.test_invariant());
+    assert!(b.data == [0, 5, 4, 2, 3]);
+    assert!(b.number_of_digits() == 5);
+    assert!(b.number_of_nonzero_digits() == 4);
+    assert!(b.smallest_digit() == Some(0));
+    assert!(b.largest_digit() == Some(5));
+}
