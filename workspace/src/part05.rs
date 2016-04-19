@@ -36,15 +36,10 @@ impl BigInt {
     // 
     // *Hint*: You can use `pop` to remove the last element of a vector.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
-        let mut bint = BigInt::new(0);
-
-        bint.data = v;
-        bint.data.reverse();
-
-        while bint.data[bint.data.len() - 1] == 0 {
-            bint.data.pop();
+        while v.len() > 0 && v[v.len() - 1] == 0 {
+            v.pop();
         }
-        bint
+        BigInt { data: v }
     }
 }
 
