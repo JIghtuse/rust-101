@@ -16,8 +16,14 @@ impl BigInt {
         } else if self.data.len() > other.data.len() {
             other
         } else {
-            // **Exercise 06.1**: Fill in this code.
-            unimplemented!()
+            for i in self.data.len() - 1 ... 0 {
+                if self.data[i] < other.data[i] {
+                    return self;
+                } else if self.data[i] > other.data[i] {
+                    return other;
+                }
+            }
+            self
         }
     }
 }
@@ -28,7 +34,10 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     // If `v` is a shared reference to a vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
     for e in v {
         let e = e.clone();
-        unimplemented!()
+        min = Some(match min {
+            None => e,
+            Some(n) => n.min_try1(e)
+        });
     }
     min
 }
@@ -43,7 +52,7 @@ impl<T: Copy> Copy for SomethingOrNothing<T> {}
 
 fn head<T>(v: &Vec<T>) -> Option<&T> {
     if v.len() > 0 {
-        unimplemented!()
+        Some(&v[0])
     } else {
         None
     }
@@ -63,4 +72,20 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
     *first.unwrap()
 }
 
+pub fn main() {
+    let a = BigInt::from_vec(vec![1]);
+    let b = BigInt::from_vec(vec![3]);
+    println!("min of {:?} and {:?} is {:?}", a.clone(), b.clone(), a.clone().min_try1(b.clone()));
 
+    let c = BigInt::from_vec(vec![1, 2, 3]);
+    let d = BigInt::from_vec(vec![3, 2, 1]);
+    println!("min of {:?} and {:?} is {:?}", c.clone(), d.clone(), c.clone().min_try1(d.clone()));
+
+    let vbig = vec![a, b, c, d];
+    println!("min element of {:?} is {:?}", &vbig, vec_min(&vbig));
+
+    let empty : Vec<i32> = vec![];
+    println!("head of {:?}: {:?}", empty, head(&empty));
+    let v =vec![4, 2, -3];
+    println!("head of {:?}: {:?}", v, head(&v));
+}
