@@ -3,6 +3,8 @@
 
 
 // ## Generic datatypes
+use std::fmt;
+use std::fmt::Display;
 
 pub enum SomethingOrNothing<T>  {
     Something(T),
@@ -69,21 +71,12 @@ impl Minimum for f32 {
     }
 }
 
-impl SomethingOrNothing<f32> {
-    pub fn print(self) {
+impl<T: Display>Display for SomethingOrNothing<T> {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Nothing => println!("There is no minimum value"),
-            Something(n) => println!("Minimum of f32 vec: {}", n),
-        };
-    }
-}
-
-impl NumberOrNothing {
-    pub fn print(self) {
-        match self {
-            Nothing => println!("The number is: <nothing>"),
-            Something(n) => println!("The number is: {}", n),
-        };
+            &Nothing => write!(fmt, "<no value>"),
+            &Something(ref n) => write!(fmt, "{}", n),
+        }
     }
 }
 
@@ -93,9 +86,8 @@ fn read_vec() -> Vec<i32> {
 
 pub fn main() {
     let vec = read_vec();
-    let min = vec_min(vec);
-    min.print();
+    println!("Minimum of {:?}: {}", vec.clone(), vec_min(vec.clone()));
 
-    let min_f32 = vec_min(vec![ 42.0, 32.3, 1e19 ]);
-    min_f32.print();
+    let v2 = vec![ 42.0, 32.3, 1e19 ];
+    println!("Minimum of {:?}: {}", v2.clone(), vec_min(v2.clone()));
 }

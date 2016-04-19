@@ -108,7 +108,8 @@ pub fn main() {
 
     let b = BigInt::from_vec(vec![0, 3, 2, 4, 5, 0]);
     assert!(b.test_invariant());
-    assert!(b.data == [0, 5, 4, 2, 3]);
+    println!("{:?}", b.data);
+    assert!(b.data == [0, 3, 2, 4, 5]);
     assert!(b.number_of_digits() == 5);
     assert!(b.number_of_nonzero_digits() == 4);
     assert!(b.smallest_digit() == Some(0));
